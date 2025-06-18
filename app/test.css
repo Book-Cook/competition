@@ -5,6 +5,28 @@
   min-height: 100vh;
   padding: 1rem;
   font-family: 'Press Start 2P', monospace;
+  position: relative;
+  overflow: hidden; /* Fix white background flash */
+}
+
+/* Retro CRT Scanlines Effect */
+.arcade-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 215, 0, 0.03) 2px,
+      rgba(255, 215, 0, 0.03) 4px
+    );
+  pointer-events: none;
+  z-index: 1;
 }
 
 .arcade-heading {
@@ -12,6 +34,12 @@
   color: #FFD700;
   text-align: center;
   margin-bottom: 2rem;
+  animation: subtle-glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes subtle-glow {
+  from { text-shadow: 0 0 3px #FFD700; }
+  to { text-shadow: 0 0 8px #FFD700; }
 }
 
 .arcade-gameBoard {
@@ -36,16 +64,79 @@
   border-radius: 8px;
   padding: 1.5rem;
   text-align: center;
+  transition: all 0.5s ease;
+  position: relative;
 }
 
 .arcade-player.player-leading {
   border-color: #28a745;
   background: #2a4d2a;
+  animation: winner-pulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(40, 167, 69, 0.3);
+  transform: scale(1.05); /* Slightly bigger when leading */
 }
 
 .arcade-player.player-behind {
   border-color: #dc3545;
   background: #4d2a2a;
+  transform: scale(0.98); /* Slightly smaller when behind */
+}
+
+.arcade-player.player-tied {
+  transform: scale(1); /* Normal size when tied */
+}
+
+/* Dynamic lead indicator - progress bar based on weekly wins */
+.arcade-player::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+  border-radius: 4px 4px 0 0;
+  transition: width 0.8s ease;
+  z-index: 2;
+  width: var(--progress, 50%);
+}
+
+.arcade-player.player-leading::before {
+  animation: lead-pulse 1s ease-in-out infinite alternate;
+}
+
+.arcade-player.player-leading {
+  border-color: #28a745;
+  background: #2a4d2a;
+  animation: winner-pulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(40, 167, 69, 0.3);
+  transform: scale(1.08); /* More dramatic scaling for weekly leader */
+}
+
+.arcade-player.player-behind {
+  border-color: #dc3545;
+  background: #4d2a2a;
+  transform: scale(0.95); /* More dramatic scaling for weekly behind */
+  opacity: 0.9;
+}
+
+.arcade-player.player-tied {
+  transform: scale(1); /* Normal size when tied */
+}
+
+@keyframes lead-pulse {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+
+@keyframes winner-pulse {
+  0%, 100% { 
+    border-color: #28a745;
+    box-shadow: 0 0 20px rgba(40, 167, 69, 0.3);
+  }
+  50% { 
+    border-color: #FFD700;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  }
 }
 
 .arcade-input {
@@ -70,6 +161,28 @@
   font-size: 2.5rem;
   color: #F4E4C1;
   margin: 1rem 0;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 10px rgba(244, 228, 193, 0.5);
+}
+
+.arcade-score.score-bump {
+  animation: score-increase 0.6s ease-out;
+}
+
+@keyframes score-increase {
+  0% { 
+    transform: scale(1);
+    color: #F4E4C1;
+  }
+  50% { 
+    transform: scale(1.3);
+    color: #FFD700;
+    text-shadow: 0 0 20px #FFD700;
+  }
+  100% { 
+    transform: scale(1);
+    color: #F4E4C1;
+  }
 }
 
 .arcade-button {
@@ -81,14 +194,34 @@
   font-family: inherit;
   font-size: 0.7rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.1s ease;
   width: 100%;
   margin-bottom: 0.5rem;
+  position: relative;
+  overflow: hidden;
 }
 
 .arcade-button:hover {
   background: #A0522D;
   border-color: #FFD700;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+}
+
+.arcade-button:active {
+  transform: scale(0.95);
+  animation: button-press 0.2s ease-out;
+}
+
+@keyframes button-press {
+  0% { 
+    background: #FFD700;
+    color: #2C1810;
+    box-shadow: 0 0 25px #FFD700;
+  }
+  100% { 
+    background: #A0522D;
+    color: #F4E4C1;
+  }
 }
 
 .arcade-button:disabled {
@@ -152,14 +285,37 @@
   min-height: 40px;
   padding: 0.25rem;
   box-sizing: border-box;
+  position: relative;
+  border: 2px solid transparent;
 }
 
 .calendar-day:hover {
   transform: scale(1.05);
+  border-color: #FFD700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.calendar-day:active {
+  animation: calendar-pop 0.3s ease-out;
+}
+
+@keyframes calendar-pop {
+  0% { transform: scale(1.05); }
+  50% { 
+    transform: scale(1.2);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+  }
+  100% { transform: scale(1.05); }
 }
 
 .calendar-day.today {
   box-shadow: 0 0 0 2px #FFD700;
+  animation: today-pulse 2s ease-in-out infinite;
+}
+
+@keyframes today-pulse {
+  0%, 100% { box-shadow: 0 0 0 2px #FFD700; }
+  50% { box-shadow: 0 0 0 2px #FFD700, 0 0 15px rgba(255, 215, 0, 0.4); }
 }
 
 .day-winner {
@@ -168,36 +324,293 @@
   font-weight: bold;
 }
 
-/* Winner modal */
+/* Epic winner celebration banner at bottom of page */
 .arcade-winnerModal {
   position: fixed;
-  top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.8);
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6347 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 1rem;
+  padding: 2rem;
+  animation: winner-slide-up 1s ease-out;
+  box-shadow: 0 -10px 50px rgba(255, 215, 0, 0.8);
+  border-top: 4px solid #FFF;
+}
+
+@keyframes winner-slide-up {
+  0% { 
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% { 
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .arcade-modalContent {
-  background: #2A1810;
-  border: 4px solid #8B4513;
-  border-radius: 8px;
-  padding: 2rem;
+  background: linear-gradient(135deg, #2A1810 0%, #1a1a1a 100%);
+  border: 4px solid #FFD700;
+  border-radius: 20px;
+  padding: 2.5rem;
   text-align: center;
-  max-width: 400px;
+  max-width: 600px;
   width: 100%;
   color: #F4E4C1;
+  animation: winner-epic-bounce 1.5s ease-out;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 0 30px rgba(255, 215, 0, 0.6),
+    inset 0 0 30px rgba(255, 215, 0, 0.1);
+}
+
+@keyframes winner-epic-bounce {
+  0% { 
+    transform: scale(0.3) rotate(-15deg);
+    opacity: 0;
+  }
+  50% { 
+    transform: scale(1.15) rotate(5deg);
+    opacity: 1;
+  }
+  70% { 
+    transform: scale(0.95) rotate(-2deg);
+  }
+  100% { 
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 .arcade-winnerTitle {
-  font-size: 1.2rem;
+  font-size: 2rem;
   margin-bottom: 1rem;
   color: #FFD700;
+  animation: winner-title-spectacular 2s ease-in-out infinite;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+@keyframes winner-title-spectacular {
+  0%, 100% { 
+    text-shadow: 
+      0 0 10px #FFD700,
+      0 0 20px #FFD700,
+      0 0 30px #FFD700;
+    transform: scale(1);
+  }
+  50% { 
+    text-shadow: 
+      0 0 20px #FFD700,
+      0 0 40px #FFD700,
+      0 0 60px #FFD700,
+      0 0 80px #FFA500;
+    transform: scale(1.1);
+  }
+}
+
+.arcade-winnerDetails {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #F4E4C1;
+  opacity: 0.9;
+}
+
+/* Epic "Start New Week" button styling */
+.arcade-new-week-button {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+  color: #FFF !important;
+  border: 3px solid #FFD700 !important;
+  border-radius: 12px !important;
+  padding: 1rem 2rem !important;
+  font-size: 0.9rem !important;
+  font-weight: bold !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  margin-top: 1.5rem !important;
+  animation: new-week-pulse 2s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
+}
+
+.arcade-new-week-button:hover {
+  background: linear-gradient(135deg, #20c997 0%, #28a745 100%) !important;
+  transform: translateY(-3px) scale(1.05) !important;
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.6) !important;
+}
+
+@keyframes new-week-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(40, 167, 69, 0.7), 0 0 40px rgba(255, 215, 0, 0.3);
+  }
+}
+
+/* Epic confetti particle system with multiple types */
+.confetti-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1002;
+}
+
+.confetti-square {
+  width: 8px;
+  height: 8px;
+  background: #FFD700;
+  animation: confetti-spin-fall linear forwards;
+}
+
+.confetti-circle {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #dc3545;
+  animation: confetti-float-fall linear forwards;
+}
+
+.confetti-triangle {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 8px solid #28a745;
+  animation: confetti-wobble-fall linear forwards;
+}
+
+.confetti-star {
+  width: 8px;
+  height: 8px;
+  background: #007bff;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  animation: confetti-spin-fall linear forwards;
+}
+
+.confetti-diamond {
+  width: 6px;
+  height: 6px;
+  background: #FF69B4;
+  transform: rotate(45deg);
+  animation: confetti-diamond-fall linear forwards;
+}
+
+@keyframes confetti-spin-fall {
+  0% {
+    transform: translateY(-100vh) translateX(0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  25% {
+    transform: translateY(-50vh) translateX(var(--wind-force, 0px)) rotate(calc(var(--rotation-speed, 360deg) * 0.25)) scale(1.1);
+  }
+  50% {
+    transform: translateY(0vh) translateX(calc(var(--wind-force, 0px) * 0.7)) rotate(calc(var(--rotation-speed, 360deg) * 0.5)) scale(0.9);
+  }
+  75% {
+    transform: translateY(50vh) translateX(calc(var(--wind-force, 0px) * 0.3)) rotate(calc(var(--rotation-speed, 360deg) * 0.75)) scale(1.05);
+  }
+  100% {
+    transform: translateY(110vh) translateX(0) rotate(var(--rotation-speed, 360deg)) scale(0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes confetti-float-fall {
+  0% {
+    transform: translateY(-100vh) translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  20% {
+    transform: translateY(-60vh) translateX(calc(var(--wind-force, 50px) * 0.8)) rotate(72deg);
+  }
+  40% {
+    transform: translateY(-20vh) translateX(calc(var(--wind-force, 50px) * -0.6)) rotate(144deg);
+  }
+  60% {
+    transform: translateY(20vh) translateX(calc(var(--wind-force, 50px) * 0.4)) rotate(216deg);
+  }
+  80% {
+    transform: translateY(60vh) translateX(calc(var(--wind-force, 50px) * -0.2)) rotate(288deg);
+  }
+  100% {
+    transform: translateY(110vh) translateX(0) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes confetti-wobble-fall {
+  0% {
+    transform: translateY(-100vh) translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  25% {
+    transform: translateY(-25vh) translateX(calc(var(--wind-force, 100px) * 1.2)) rotate(90deg);
+  }
+  50% {
+    transform: translateY(var(--bounce-height, 25vh)) translateX(calc(var(--wind-force, 100px) * -0.8)) rotate(180deg);
+  }
+  75% {
+    transform: translateY(75vh) translateX(calc(var(--wind-force, 100px) * 0.4)) rotate(270deg);
+  }
+  100% {
+    transform: translateY(110vh) translateX(calc(var(--wind-force, 100px) * -0.2)) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes confetti-diamond-fall {
+  0% {
+    transform: translateY(-100vh) translateX(0) rotate(45deg) scale(1);
+    opacity: 1;
+  }
+  30% {
+    transform: translateY(-40vh) translateX(calc(var(--wind-force, 0px) * 1.5)) rotate(135deg) scale(1.3);
+  }
+  60% {
+    transform: translateY(10vh) translateX(calc(var(--wind-force, 0px) * -0.7)) rotate(270deg) scale(0.8);
+  }
+  100% {
+    transform: translateY(110vh) translateX(calc(var(--wind-force, 0px) * 0.3)) rotate(405deg) scale(0.3);
+    opacity: 0;
+  }
+}
+
+/* Remove screen shake completely */
+
+/* Button ripple effect */
+.button-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.button-ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 215, 0, 0.6);
+  transform: translate(-50%, -50%);
+  animation: ripple-effect 0.6s ease-out;
+}
+
+@keyframes ripple-effect {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+  }
 }
 
 .arcade-rewardText {
