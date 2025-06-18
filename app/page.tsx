@@ -241,12 +241,16 @@ export default function ScoreboardPage() {
     const colors = ['#FFD700', '#dc3545', '#28a745', '#007bff', '#FF69B4', '#FFA500', '#32CD32', '#FF1493'];
     const container = document.body;
     
+    // Store confetti state for cleanup
+    let confettiInterval: NodeJS.Timeout;
+    
     // Create a massive confetti explosion - 150 particles!
     for (let i = 0; i < 150; i++) {
       const particle = document.createElement('div');
       const particleType = particleTypes[Math.floor(Math.random() * particleTypes.length)];
       
       particle.className = `confetti-particle confetti-${particleType}`;
+      particle.setAttribute('data-confetti', 'true'); // Mark for cleanup
       
       // Random positioning across the screen width with physics variation
       const startX = Math.random() * 100;
@@ -269,22 +273,16 @@ export default function ScoreboardPage() {
       particle.style.animationDelay = Math.random() * 1.5 + 's'; // 0-1.5 second delay
       
       container.appendChild(particle);
-      
-      // Remove particle after animation
-      setTimeout(() => {
-        if (particle.parentNode) {
-          particle.remove();
-        }
-      }, (duration + 2) * 1000);
     }
     
     // Create continuous realistic confetti for 8 seconds
-    const confettiInterval = setInterval(() => {
+    confettiInterval = setInterval(() => {
       for (let i = 0; i < 8; i++) {
         const particle = document.createElement('div');
         const particleType = particleTypes[Math.floor(Math.random() * particleTypes.length)];
         
         particle.className = `confetti-particle confetti-${particleType}`;
+        particle.setAttribute('data-confetti', 'true'); // Mark for cleanup
         particle.style.left = Math.random() * 100 + '%';
         
         // Add physics
@@ -300,18 +298,27 @@ export default function ScoreboardPage() {
         particle.style.animationDuration = duration + 's';
         
         container.appendChild(particle);
-        
-        setTimeout(() => {
-          if (particle.parentNode) {
-            particle.remove();
-          }
-        }, duration * 1000 + 1000);
       }
     }, 300);
     
-    // Stop continuous confetti after 8 seconds
+    // Store cleanup function globally for reset
+    (window as any).cleanupConfetti = () => {
+      // Clear interval
+      if (confettiInterval) {
+        clearInterval(confettiInterval);
+      }
+      
+      // Remove all confetti particles immediately
+      document.querySelectorAll('[data-confetti="true"]').forEach(particle => {
+        particle.remove();
+      });
+    };
+    
+    // Auto cleanup after 8 seconds
     setTimeout(() => {
-      clearInterval(confettiInterval);
+      if (confettiInterval) {
+        clearInterval(confettiInterval);
+      }
     }, 8000);
   };
 
@@ -334,6 +341,11 @@ export default function ScoreboardPage() {
   };
 
   const resetCompetition = () => {
+    // Clean up any existing confetti
+    if ((window as any).cleanupConfetti) {
+      (window as any).cleanupConfetti();
+    }
+    
     setGameState(prev => ({
       ...prev,
       player1: { ...prev.player1, dailyScore: 0 },
@@ -362,6 +374,40 @@ export default function ScoreboardPage() {
         selectedReward: reward
       }
     }));
+  };
+
+  const getCompetitionStage = (playerNumber: 1 | 2) => {
+    if (!gameState.weeklyResults || gameState.weeklyResults.length === 0) {
+      return 'start'; // Beginning of competition
+    }
+    
+    const player1Wins = gameState.weeklyResults.filter(r => r.winner === 1).length;
+    const player2Wins = gameState.weeklyResults.filter(r => r.winner === 2).length;
+    const playerWins = playerNumber === 1 ? player1Wins : player2Wins;
+    const opponentWins = playerNumber === 1 ? player2Wins : player1Wins;
+    
+    // Calculate how close to winning (need 4 wins out of 7 days)
+    const winsNeeded = 4;
+    const daysPlayed = player1Wins + player2Wins;
+    const daysRemaining = 7 - daysPlayed;
+    
+    // Can they still mathematically win?
+    const canWin = playerWins + daysRemaining >= winsNeeded;
+    const canOpponentWin = opponentWins + daysRemaining >= winsNeeded;
+    
+    if (playerWins >= winsNeeded) {
+      return 'winner'; // They won!
+    } else if (!canWin) {
+      return 'eliminated'; // They can't win
+    } else if (playerWins === 3) {
+      return 'critical'; // One win away from victory
+    } else if (playerWins === 2) {
+      return 'heated'; // Getting close
+    } else if (playerWins === 1) {
+      return 'building'; // Building momentum
+    } else {
+      return 'start'; // Just starting
+    }
   };
 
   const getPlayerLeadStatus = (playerNumber: 1 | 2) => {
@@ -572,7 +618,7 @@ export default function ScoreboardPage() {
       </div>
 
       <div className="arcade-gameBoard">
-        <div className="arcade-players">            <div className={`arcade-player ${getPlayerLeadStatus(1) === 'leading' ? 'player-leading' : getPlayerLeadStatus(1) === 'behind' ? 'player-behind' : 'player-tied'}`} 
+        <div className="arcade-players">            <div className={`arcade-player ${getPlayerLeadStatus(1) === 'leading' ? 'player-leading' : getPlayerLeadStatus(1) === 'behind' ? 'player-behind' : 'player-tied'} stage-${getCompetitionStage(1)}`} 
                  style={{'--progress': `${getWeeklyProgressPercentage(1)}%`} as React.CSSProperties}>
               <input
                 className="arcade-input"
@@ -605,7 +651,7 @@ export default function ScoreboardPage() {
                 />
               </div>
             </div>
-             <div className={`arcade-player ${getPlayerLeadStatus(2) === 'leading' ? 'player-leading' : getPlayerLeadStatus(2) === 'behind' ? 'player-behind' : 'player-tied'}`}
+             <div className={`arcade-player ${getPlayerLeadStatus(2) === 'leading' ? 'player-leading' : getPlayerLeadStatus(2) === 'behind' ? 'player-behind' : 'player-tied'} stage-${getCompetitionStage(2)}`}
                  style={{'--progress': `${getWeeklyProgressPercentage(2)}%`} as React.CSSProperties}>
               <input
                 className="arcade-input"

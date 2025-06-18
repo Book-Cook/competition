@@ -86,18 +86,152 @@
   transform: scale(1); /* Normal size when tied */
 }
 
-/* Dynamic lead indicator - progress bar based on weekly wins */
-.arcade-player::before {
+/* Progressive Competition Stage Animations */
+
+/* Stage 1: Start - Minimal styling */
+.arcade-player.stage-start {
+  transform: scale(1);
+  border-color: #8B4513;
+  background: #3D2817;
+  box-shadow: none;
+  animation: none;
+}
+
+/* Stage 2: Building Momentum - Subtle glow */
+.arcade-player.stage-building {
+  transform: scale(1.02);
+  border-color: #FFD700;
+  background: #3D2817;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+  animation: building-pulse 3s ease-in-out infinite;
+}
+
+@keyframes building-pulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
+  50% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
+}
+
+/* Stage 3: Heated Competition - More intense */
+.arcade-player.stage-heated {
+  transform: scale(1.05);
+  border-color: #FFA500;
+  background: linear-gradient(135deg, #3D2817 0%, #4a3420 100%);
+  box-shadow: 0 0 20px rgba(255, 165, 0, 0.4);
+  animation: heated-glow 2s ease-in-out infinite;
+}
+
+@keyframes heated-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(255, 165, 0, 0.4);
+    border-color: #FFA500;
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(255, 165, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.3);
+    border-color: #FFD700;
+  }
+}
+
+/* Stage 4: Critical - One win away, very intense */
+.arcade-player.stage-critical {
+  transform: scale(1.08);
+  border: 3px solid #FF6347;
+  background: linear-gradient(135deg, #4a3420 0%, #5a3a25 100%);
+  box-shadow: 0 0 30px rgba(255, 99, 71, 0.6);
+  animation: critical-intensity 1.5s ease-in-out infinite;
+  position: relative;
+}
+
+.arcade-player.stage-critical::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #FFD700, #FFA500);
-  border-radius: 4px 4px 0 0;
-  transition: width 0.8s ease;
-  z-index: 2;
-  width: var(--progress, 50%);
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(45deg, #FF6347, #FFD700, #FF6347, #FFD700);
+  border-radius: 8px;
+  z-index: -1;
+  animation: critical-border 2s linear infinite;
+}
+
+@keyframes critical-intensity {
+  0%, 100% { 
+    box-shadow: 0 0 30px rgba(255, 99, 71, 0.6);
+    transform: scale(1.08);
+  }
+  50% { 
+    box-shadow: 
+      0 0 40px rgba(255, 99, 71, 0.8), 
+      0 0 60px rgba(255, 215, 0, 0.5),
+      0 0 80px rgba(255, 99, 71, 0.3);
+    transform: scale(1.12);
+  }
+}
+
+@keyframes critical-border {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Stage 5: Eliminated - Dimmed and sad */
+.arcade-player.stage-eliminated {
+  transform: scale(0.92);
+  border-color: #666;
+  background: #2a1f10;
+  box-shadow: none;
+  opacity: 0.6;
+  animation: eliminated-fade 4s ease-in-out infinite;
+}
+
+@keyframes eliminated-fade {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.4; }
+}
+
+/* Stage 6: Winner - Epic celebration mode */
+.arcade-player.stage-winner {
+  transform: scale(1.15);
+  border: 4px solid #FFD700;
+  background: linear-gradient(135deg, #2a4d2a 0%, #1a3d1a 100%);
+  box-shadow: 
+    0 0 40px rgba(255, 215, 0, 0.8),
+    0 0 80px rgba(40, 167, 69, 0.6),
+    inset 0 0 30px rgba(255, 215, 0, 0.2);
+  animation: winner-celebration 1s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.arcade-player.stage-winner::before {
+  content: '👑';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 2rem;
+  animation: crown-spin 3s linear infinite;
+  z-index: 10;
+}
+
+@keyframes winner-celebration {
+  0%, 100% { 
+    box-shadow: 
+      0 0 40px rgba(255, 215, 0, 0.8),
+      0 0 80px rgba(40, 167, 69, 0.6),
+      inset 0 0 30px rgba(255, 215, 0, 0.2);
+  }
+  50% { 
+    box-shadow: 
+      0 0 60px rgba(255, 215, 0, 1),
+      0 0 120px rgba(40, 167, 69, 0.8),
+      0 0 160px rgba(255, 215, 0, 0.4),
+      inset 0 0 50px rgba(255, 215, 0, 0.4);
+  }
+}
+
+@keyframes crown-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .arcade-player.player-leading::before {
