@@ -368,22 +368,9 @@ export default function ScoreboardPage() {
     <div className="arcade-container">
       <h1 className="arcade-heading">Weekly Competition</h1>
       
-      {/* Weekly Calendar - Clean */}
-      <div style={{ 
-        textAlign: 'center', 
-        marginBottom: '1.5rem',
-        padding: '1rem',
-        backgroundColor: '#1a1a1a',
-        borderRadius: '8px',
-        border: '2px solid #8B4513'
-      }}>
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(7, 1fr)', 
-          gap: '0.5rem',
-          maxWidth: '600px',
-          margin: '0 auto'
-        }}>
+      {/* Weekly Calendar - Arcade Style with Mobile Scaling */}
+      <div className="weekly-calendar">
+        <div className="calendar-grid">
           {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => {
             // Calculate the actual date for this day of the week
             const weekStartString = gameState.weekStartDate || getCurrentDateString();
@@ -404,46 +391,28 @@ export default function ScoreboardPage() {
             const isToday = gameState.currentDayOfWeek === (index === 6 ? 'Sunday' : ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][index]);
             const currentDayIndex = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].indexOf(gameState.currentDayOfWeek);
             const isDayPassed = index < currentDayIndex;
-            const isFutureDay = index > currentDayIndex;
             
             let backgroundColor = '#3D2817';
             let textColor = '#F4E4C1';
-            let borderColor = '#8B4513';
             let opacity = 1;
             
-            // Gray out past days (but keep them clickable)
+            // Gray out past days
             if (isDayPassed) {
               opacity = 0.6;
               backgroundColor = '#2a1f10';
             }
             
-            // Future days stay normal color
-            if (isFutureDay) {
-              // Keep normal styling
-            }
-            
             // Color based on winner
             if (dayResult) {
               if (dayResult.winner === 1) {
-                backgroundColor = '#2a4d2a'; // Dark green for player 1
+                backgroundColor = '#2a4d2a';
                 textColor = '#FFD700';
-                borderColor = '#4a7c59';
               } else if (dayResult.winner === 2) {
-                backgroundColor = '#4d2a2a'; // Dark red for player 2  
+                backgroundColor = '#4d2a2a';
                 textColor = '#FFD700';
-                borderColor = '#7c4a4a';
               } else {
-                backgroundColor = '#4d4d2a'; // Dark yellow for tie
+                backgroundColor = '#4d4d2a';
                 textColor = '#F4E4C1';
-                borderColor = '#7c7c4a';
-              }
-            }
-            
-            // Today gets a special gold border
-            if (isToday) {
-              borderColor = '#FFD700';
-              if (!dayResult) {
-                backgroundColor = '#4a3817'; // Slightly brighter for today
               }
             }
             
@@ -451,35 +420,22 @@ export default function ScoreboardPage() {
               <div 
                 key={day} 
                 onClick={() => toggleDayWinner(index)}
+                className={`calendar-day ${isToday ? 'today' : ''}`}
                 style={{
-                  padding: '0.5rem',
                   backgroundColor,
-                  border: `2px solid ${borderColor}`,
-                  borderRadius: '4px',
-                  fontSize: '0.8rem',
                   color: textColor,
-                  fontWeight: isToday ? 'bold' : 'normal',
-                  opacity,
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  userSelect: 'none'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.05)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
+                  opacity
                 }}
               >
                 <div>{day}</div>
                 {dayResult && (
-                  <div style={{ fontSize: '0.6rem', marginTop: '0.2rem' }}>
+                  <div className="day-winner">
                     {dayResult.winner === 1 ? gameState.player1.name.charAt(0) : 
                      dayResult.winner === 2 ? gameState.player2.name.charAt(0) : 'T'}
                   </div>
                 )}
                 {isToday && !dayResult && (
-                  <div style={{ fontSize: '0.6rem', marginTop: '0.2rem', opacity: 0.7 }}>
+                  <div className="day-winner" style={{ opacity: 0.7 }}>
                     Today
                   </div>
                 )}
@@ -490,7 +446,6 @@ export default function ScoreboardPage() {
       </div>
 
       <div className="arcade-gameBoard">
-
         <div className="arcade-players">
           <div className={`arcade-player ${getPlayerLeadStatus(1) === 'leading' ? 'player-leading' : getPlayerLeadStatus(1) === 'behind' ? 'player-behind' : 'player-tied'}`}>
             <input
@@ -499,17 +454,19 @@ export default function ScoreboardPage() {
               value={gameState.player1.name}
               onChange={(e) => updatePlayerName(1, e.target.value)}
               placeholder="Player 1 Name"
-              style={{ marginBottom: '1rem', width: '100%' }}
             />
             <div className="arcade-score">{gameState.player1.dailyScore}</div>
             <div style={{ fontSize: '0.7rem', marginBottom: '1rem', opacity: 0.8 }}>
               Today's Points
             </div>
-            <button className="arcade-button" onClick={() => incrementScore(1)} disabled={gameState.isCompetitionOver}>
+            <button 
+              className="arcade-button" 
+              onClick={() => incrementScore(1)} 
+              disabled={gameState.isCompetitionOver}
+            >
               + Point
             </button>
             
-            {/* Reward Input */}
             <div className="arcade-settingGroup" style={{ marginTop: '1rem' }}>
               <label className="arcade-settingLabel">Reward</label>
               <input
@@ -518,7 +475,7 @@ export default function ScoreboardPage() {
                 value={gameState.player1.selectedReward}
                 onChange={(e) => updatePlayerReward(1, e.target.value)}
                 placeholder="Enter your reward..."
-                style={{ width: '100%', fontSize: '0.7rem' }}
+                style={{ fontSize: '0.7rem' }}
               />
             </div>
           </div>
@@ -530,17 +487,19 @@ export default function ScoreboardPage() {
               value={gameState.player2.name}
               onChange={(e) => updatePlayerName(2, e.target.value)}
               placeholder="Player 2 Name"
-              style={{ marginBottom: '1rem', width: '100%' }}
             />
             <div className="arcade-score">{gameState.player2.dailyScore}</div>
             <div style={{ fontSize: '0.7rem', marginBottom: '1rem', opacity: 0.8 }}>
               Today's Points
             </div>
-            <button className="arcade-button" onClick={() => incrementScore(2)} disabled={gameState.isCompetitionOver}>
+            <button 
+              className="arcade-button" 
+              onClick={() => incrementScore(2)} 
+              disabled={gameState.isCompetitionOver}
+            >
               + Point
             </button>
             
-            {/* Reward Input */}
             <div className="arcade-settingGroup" style={{ marginTop: '1rem' }}>
               <label className="arcade-settingLabel">Reward</label>
               <input
@@ -549,7 +508,7 @@ export default function ScoreboardPage() {
                 value={gameState.player2.selectedReward}
                 onChange={(e) => updatePlayerReward(2, e.target.value)}
                 placeholder="Enter your reward..."
-                style={{ width: '100%', fontSize: '0.7rem' }}
+                style={{ fontSize: '0.7rem' }}
               />
             </div>
           </div>
@@ -569,14 +528,16 @@ export default function ScoreboardPage() {
         </div>
       </div>
 
-      {/* Competition Winner Modal */}
+      {/* Modern Winner Modal */}
       {gameState.isCompetitionOver && (
-        <div className="arcade-winnerModal">
-          <div className="arcade-modalContent">
-            <h2 className="arcade-winnerTitle">🎉 {gameState.competitionWinner?.name} Wins the Week!</h2>
-            <p>Weekly Wins: {gameState.competitionWinner === gameState.player1 ? getWeeklyWins().player1Wins : getWeeklyWins().player2Wins}</p>
-            <p className="arcade-rewardText">{getWinnerReward()}</p>
-            <button className="arcade-button" onClick={resetCompetition}>
+        <div className="winner-modal">
+          <div className="winner-content">
+            <h2 className="winner-title">🎉 {gameState.competitionWinner?.name} Wins!</h2>
+            <p className="winner-details">
+              Weekly Wins: {gameState.competitionWinner === gameState.player1 ? getWeeklyWins().player1Wins : getWeeklyWins().player2Wins}
+            </p>
+            <p className="winner-reward">{getWinnerReward()}</p>
+            <button className="new-week-button" onClick={resetCompetition}>
               Start New Week
             </button>
           </div>

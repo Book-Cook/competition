@@ -1,1 +1,269 @@
-/* Restore original arcade styling - don't override! */
+/* Restore original arcade styling with mobile improvements */
+.arcade-container {
+  background-color: #2C1810;
+  color: #F4E4C1;
+  min-height: 100vh;
+  padding: 1rem;
+  font-family: 'Press Start 2P', monospace;
+}
+
+.arcade-heading {
+  font-size: 1.5rem;
+  color: #FFD700;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.arcade-gameBoard {
+  background: #2A1810;
+  border: 4px solid #8B4513;
+  border-radius: 8px;
+  padding: 1.5rem;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.arcade-players {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.arcade-player {
+  background: #3D2817;
+  border: 3px solid #8B4513;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.arcade-player.player-leading {
+  border-color: #28a745;
+  background: #2a4d2a;
+}
+
+.arcade-player.player-behind {
+  border-color: #dc3545;
+  background: #4d2a2a;
+}
+
+.arcade-input {
+  background: #3D2817;
+  border: 2px solid #8B4513;
+  border-radius: 4px;
+  color: #F4E4C1;
+  padding: 0.75rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.arcade-input:focus {
+  outline: none;
+  border-color: #FFD700;
+}
+
+.arcade-score {
+  font-size: 2.5rem;
+  color: #F4E4C1;
+  margin: 1rem 0;
+}
+
+.arcade-button {
+  background: #8B4513;
+  color: #F4E4C1;
+  border: 2px solid #A0522D;
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  font-family: inherit;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.arcade-button:hover {
+  background: #A0522D;
+  border-color: #FFD700;
+}
+
+.arcade-button:disabled {
+  background: #555;
+  border-color: #777;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.arcade-settings {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.arcade-settingGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.arcade-settingLabel {
+  font-size: 0.6rem;
+  color: #FFD700;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Weekly calendar with mobile scaling */
+.weekly-calendar {
+  background: #1a1a1a;
+  border: 2px solid #8B4513;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-size: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  min-height: 40px;
+  padding: 0.25rem;
+  box-sizing: border-box;
+}
+
+.calendar-day:hover {
+  transform: scale(1.05);
+}
+
+.calendar-day.today {
+  box-shadow: 0 0 0 2px #FFD700;
+}
+
+.day-winner {
+  font-size: 0.4rem;
+  margin-top: 0.1rem;
+  font-weight: bold;
+}
+
+/* Winner modal */
+.arcade-winnerModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.arcade-modalContent {
+  background: #2A1810;
+  border: 4px solid #8B4513;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  color: #F4E4C1;
+}
+
+.arcade-winnerTitle {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #FFD700;
+}
+
+.arcade-rewardText {
+  font-size: 0.8rem;
+  margin: 1rem 0;
+  color: #F4E4C1;
+}
+
+/* Mobile responsive improvements */
+@media (min-width: 480px) {
+  .arcade-container {
+    padding: 1.5rem;
+  }
+  
+  .arcade-heading {
+    font-size: 2rem;
+  }
+  
+  .calendar-grid {
+    gap: 0.5rem;
+  }
+  
+  .calendar-day {
+    font-size: 0.6rem;
+    min-height: 50px;
+  }
+  
+  .day-winner {
+    font-size: 0.5rem;
+  }
+  
+  .arcade-score {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .arcade-container {
+    padding: 2rem;
+  }
+  
+  .arcade-gameBoard {
+    max-width: 900px;
+    padding: 2rem;
+  }
+  
+  .arcade-players {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  
+  .calendar-grid {
+    gap: 0.5rem;
+    max-width: 600px;
+  }
+  
+  .calendar-day {
+    font-size: 0.8rem;
+    min-height: 60px;
+  }
+  
+  .day-winner {
+    font-size: 0.6rem;
+  }
+  
+  .arcade-score {
+    font-size: 3rem;
+  }
+}
