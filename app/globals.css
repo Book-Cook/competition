@@ -1,0 +1,262 @@
+/* /app/globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Press Start 2P', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Retro Arcade Styles */
+.arcade-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #2C1810 0%, #1A0F0A 50%, #0F0704 100%);
+  color: #F4E4C1;
+}
+
+.arcade-heading {
+  font-size: 2.5rem;
+  font-weight: 400;
+  color: #FFD700;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 2px 2px 0px #B8860B, 4px 4px 0px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+.arcade-gameBoard {
+  background: #2A1810;
+  border: 4px solid #8B4513;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: inset 0 0 0 2px #F4E4C1, 0 8px 0 #654321, 0 12px 20px rgba(0, 0, 0, 0.6);
+  width: 100%;
+  max-width: 900px;
+}
+
+.arcade-players {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.arcade-player {
+  background: linear-gradient(145deg, #3D2817, #2A1810);
+  border: 3px solid #8B4513;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  position: relative;
+  transition: all 0.2s ease;
+  box-shadow: inset 2px 2px 0 #654321, inset -2px -2px 0 #1A0F0A;
+}
+
+.arcade-player:hover {
+  transform: translateY(-2px);
+  box-shadow: inset 2px 2px 0 #654321, inset -2px -2px 0 #1A0F0A, 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.arcade-player:nth-child(1) {
+  border-color: #FF6B35;
+}
+
+.arcade-player:nth-child(2) {
+  border-color: #4ECDC4;
+}
+
+.arcade-playerName {
+  font-size: 1rem;
+  color: #FFD700;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
+}
+
+.arcade-score {
+  font-size: 3.5rem;
+  font-weight: 400;
+  color: #F4E4C1;
+  margin: 1rem 0;
+  text-shadow: 2px 2px 0px #8B4513, 4px 4px 0px rgba(0, 0, 0, 0.7);
+  line-height: 1;
+}
+
+.arcade-button {
+  background: linear-gradient(145deg, #8B4513, #654321);
+  color: #F4E4C1;
+  border: 2px solid #A0522D;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  font-family: 'Press Start 2P', monospace;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  box-shadow: inset 1px 1px 0 #CD853F, inset -1px -1px 0 #3D2817, 2px 2px 0 #3D2817;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  min-width: 120px;
+}
+
+.arcade-button:hover {
+  background: linear-gradient(145deg, #A0522D, #8B4513);
+  transform: translate(1px, 1px);
+  box-shadow: inset 1px 1px 0 #CD853F, inset -1px -1px 0 #3D2817, 1px 1px 0 #3D2817;
+}
+
+.arcade-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: inset 1px 1px 0 #654321, inset -1px -1px 0 #2A1810;
+}
+
+.arcade-settings {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: end;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: linear-gradient(145deg, #1A0F0A, #2A1810);
+  border: 2px solid #654321;
+  border-radius: 6px;
+  box-shadow: inset 1px 1px 0 #3D2817;
+}
+
+.arcade-settingGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.arcade-settingLabel {
+  font-size: 0.6rem;
+  color: #FFD700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
+}
+
+.arcade-input {
+  padding: 0.5rem;
+  border: 2px solid #8B4513;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-family: 'Press Start 2P', monospace;
+  background: #1A0F0A;
+  color: #F4E4C1;
+  width: 80px;
+  text-align: center;
+  box-shadow: inset 1px 1px 0 #654321, inset -1px -1px 0 #3D2817;
+}
+
+.arcade-input:focus {
+  outline: none;
+  border-color: #FFD700;
+  box-shadow: inset 1px 1px 0 #654321, inset -1px -1px 0 #3D2817, 0 0 0 2px #FFD700;
+}
+
+.arcade-select {
+  padding: 0.5rem;
+  border: 2px solid #8B4513;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-family: 'Press Start 2P', monospace;
+  background: #1A0F0A;
+  color: #F4E4C1;
+  cursor: pointer;
+  min-width: 200px;
+  box-shadow: inset 1px 1px 0 #654321, inset -1px -1px 0 #3D2817;
+}
+
+.arcade-select:focus {
+  outline: none;
+  border-color: #FFD700;
+  box-shadow: inset 1px 1px 0 #654321, inset -1px -1px 0 #3D2817, 0 0 0 2px #FFD700;
+}
+
+.arcade-winnerModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 5, 2, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.arcade-modalContent {
+  background: linear-gradient(145deg, #2A1810, #1A0F0A);
+  border: 4px solid #FFD700;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: inset 0 0 0 2px #8B4513, 0 8px 0 #654321, 0 12px 25px rgba(0, 0, 0, 0.8);
+}
+
+.arcade-winnerTitle {
+  font-size: 1.5rem;
+  color: #FFD700;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 2px 2px 0px #B8860B, 4px 4px 0px rgba(0, 0, 0, 0.5);
+}
+
+.arcade-rewardText {
+  font-size: 0.75rem;
+  color: #F4E4C1;
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
+  text-transform: uppercase;
+}
+
+/* Player Lead Status Indicators */
+.player-leading {
+  border-color: #00FF00 !important;
+  box-shadow: inset 2px 2px 0 #654321, inset -2px -2px 0 #1A0F0A, 0 0 20px rgba(0, 255, 0, 0.3) !important;
+  background: linear-gradient(145deg, #2F4F2F, #1F3F1F) !important;
+}
+
+.player-leading:hover {
+  box-shadow: inset 2px 2px 0 #654321, inset -2px -2px 0 #1A0F0A, 0 4px 8px rgba(0, 0, 0, 0.4), 0 0 25px rgba(0, 255, 0, 0.4) !important;
+}
+
+.player-behind {
+  border-color: #FF4444 !important;
+  box-shadow: inset 2px 2px 0 #654321, inset -2px -2px 0 #1A0F0A, 0 0 15px rgba(255, 68, 68, 0.2) !important;
+  background: linear-gradient(145deg, #4F2F2F, #3F1F1F) !important;
+}
+
+.player-behind:hover {
+  box-shadow: inset 2px 2px 0 #654321, inset -2px -2px 0 #1A0F0A, 0 4px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 68, 68, 0.3) !important;
+}
+
+.player-tied {
+  border-color: #FFD700 !important;
+  box-shadow: inset 2px 2px 0 #654321, inset -2px -2px 0 #1A0F0A, 0 0 10px rgba(255, 215, 0, 0.2) !important;
+}
+
+.player-tied:hover {
+  box-shadow: inset 2px 2px 0 #654321, inset -2px -2px 0 #1A0F0A, 0 4px 8px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.3) !important;
+}
